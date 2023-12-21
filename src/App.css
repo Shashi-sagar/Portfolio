@@ -5,6 +5,10 @@
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+  border-style: solid;
+  border-width: 10px;
+  border-image: linear-gradient(to right, #00162E, #005C99) 1;
+  box-shadow: 0 0 50px 0 rgba(192, 192, 192, 1), inset 0 0 50px 0 rgba(192, 192, 192, 1);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -33,6 +37,38 @@
     transform: rotate(0deg);
   }
   to {
-    transform: rotate(360deg);
+    transform: rotate(45deg);
+  }
+}
+
+.shashi-sagar{
+  background: linear-gradient(to bottom, #00162E, #005C99);
+height: 100vh;
+}
+.shashi-sagar::before {
+  content: '\2605'; 
+  position: absolute;
+  top: 0;
+  left: 0;
+  font-size: 20px;
+  color: white;
+}
+.shashi-sagar::after {
+  content: '\2605';
+  position: absolute;
+  top: 50%;
+  left: 70%;
+  font-size: 15px;
+  color: white;
+}
+@keyframes twinkle {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
   }
 }
