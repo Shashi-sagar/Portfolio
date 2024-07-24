@@ -9,7 +9,7 @@ import Tailwind from "../assets/tailwind.png";
 import Python from "../assets/python.png";
 import Mysql from "../assets/mysql.png";
 
-const Experience = () => {
+const myskills = () => {
     const techs = [
         {
             id: 1,
@@ -44,7 +44,7 @@ const Experience = () => {
         {
             id: 6,
             src: Python,
-            title: "Python (BASIC)",
+            title: "Python (Basic)",
             style: "shadow-yellow-400",
         },
         {
@@ -62,11 +62,11 @@ const Experience = () => {
     ];
 
     return (
-        <div name="experience" className="bg-gradient-to-b from-gray-800 to-black w-full min-h-screen py-16">
+        <div name="my skills" className="bg-gradient-to-b from-gray-800 to-black w-full min-h-screen py-16">
             <div className="max-w-screen-lg mx-auto p-4 flex flex-col justify-center w-full h-full text-white">
                 <div>
                     <p className="text-4xl font-bold border-b-4 border-gray-500 p-2 inline">
-                        Experience
+                        My Skills
                     </p>
                     <p className="py-6">These are the technologies I've worked with</p>
                 </div>
@@ -87,4 +87,4 @@ const Experience = () => {
     );
 };
 
-export default Experience;
+export default myskills;
