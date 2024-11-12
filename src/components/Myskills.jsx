@@ -8,53 +8,60 @@ import ReactJS from "../assets/react.png";
 import Tailwind from "../assets/tailwind.png";
 import Python from "../assets/python.png";
 import Mysql from "../assets/mysql.png";
+import WordPress from "../assets/wordpress.png";
 
 const myskills = () => {
     const techs = [
         {
             id: 1,
-            src: Html,
-            title: "HTML",
-            style: "shadow-orange-500",
-        },
-        {
-            id: 2,
-            src: Css,
-            title: "CSS",
-            style: "shadow-blue-500",
-        },
-        {
-            id: 3,
             src: Javascript,
             title: "JavaScript",
             style: "shadow-yellow-500",
         },
         {
-            id: 4,
+            id: 2,
             src: ReactJS,
             title: "React",
             style: "shadow-blue-600",
         },
         {
+            id: 3,
+            src: WordPress,
+            title: "WordPress",
+            style: "shadow-gray-200",
+        },
+        {
+            id: 4,
+            src: Html,
+            title: "HTML5",
+            style: "shadow-orange-500",
+        },
+        {
             id: 5,
+            src: Css,
+            title: "CSS3",
+            style: "shadow-blue-500",
+        },  
+        {
+            id: 6,
             src: Tailwind,
             title: "Tailwind",
             style: "shadow-sky-400",
         },
         {
-            id: 6,
+            id: 7,
             src: Python,
             title: "Python (Basic)",
             style: "shadow-yellow-400",
         },
         {
-            id: 7,
+            id: 8,
             src: Mysql,
             title: "MySql (Basic)",
             style: "shadow-orange-400",
         },
         {
-            id: 8,
+            id: 9,
             src: GitHub,
             title: "GitHub",
             style: "shadow-gray-400",
