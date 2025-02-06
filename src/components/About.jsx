@@ -66,7 +66,7 @@ const About = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 py-12 px-4 sm:px-6 lg:px-8">
+    <div name="about" className="min-h-screen bg-gray-950 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         <h1 className="text-4xl font-bold text-gray-100 mb-8 border-b-4 border-gray-500 inline-block">About</h1>
         {sections.map(({ id, title, icon, content }) => (
