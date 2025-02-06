@@ -1,95 +1,154 @@
-import React, { useState } from 'react';
+import { useState } from "react";
+
+const FORM_TYPES = {
+    CONTACT: "contact",
+    FEEDBACK: "feedback"
+};
+
+const INITIAL_FORM_DATA = {
+    name: "",
+    email: "",
+    message: "",
+    rating: "",
+    comments: "",
+    _gotcha: ""
+};
 
 const Contact = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: '',
-  });
-  const [errors, setErrors] = useState({});
+    const [formType, setFormType] = useState(FORM_TYPES.CONTACT);
+    const [formData, setFormData] = useState(INITIAL_FORM_DATA);
+    const [errors, setErrors] = useState({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitStatus, setSubmitStatus] = useState("");
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
-    setErrors({ ...errors, [name]: '' }); // Clear error on change
-  };
+    const handleChange = (e) => {
+        setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    };
 
-  const validateEmail = (email) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
-  };
+    const validateForm = () => {
+        let newErrors = {};
+        if (!formData.name.trim()) newErrors.name = "Name is required";
+        if (!formData.email.trim()) newErrors.email = "Email is required";
+        if (formType === FORM_TYPES.CONTACT && !formData.message.trim()) newErrors.message = "Message is required";
+        if (formType === FORM_TYPES.FEEDBACK && !formData.rating) newErrors.rating = "Rating is required";
+        if (formType === FORM_TYPES.FEEDBACK && !formData.comments.trim()) newErrors.comments = "Comments are required";
+        
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
 
-  const validate = () => {
-    const newErrors = {};
-    if (!formData.name) newErrors.name = 'Name is required';
-    if (!formData.email) newErrors.email = 'Email is required';
-    else if (!validateEmail(formData.email)) {
-      newErrors.email = 'Invalid email format';
-    }
-    if (!formData.message) newErrors.message = 'Message is required';
-    return newErrors;
-  };
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!validateForm()) return;
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const validationErrors = validate();
+        setIsSubmitting(true);
+        setSubmitStatus("");
 
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return; // Prevent form submission if errors exist
-    }
+        try {
+            const response = await fetch("https://getform.io/f/amddzrmb", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                body: JSON.stringify({
+                    ...formData,
+                    form_type: formType,
+                    submission_date: new Date().toISOString()
+                })
+            });
 
-    // If no validation errors, submit the form
-    event.target.submit();
-  };
+            if (response.ok) {
+                setSubmitStatus("success");
+                setFormData(INITIAL_FORM_DATA);
+            } else {
+                setSubmitStatus("error");
+            }
+        } catch (error) {
+            setSubmitStatus("error");
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
-  return (
-    <div name="contact" className='w-full min-h-screen bg-gradient-to-b from-black to-gray-800 p-4 text-white'>
-      <div className='flex flex-col p-4 justify-center max-w-screen-lg mx-auto h-full'>
-        <div className='pb-8'>
-          <p className='text-4xl font-bold inline border-b-4 border-gray-500'>Contact</p>
-          <p className='py-6'>Submit the Form Below to get in touch with me</p>
+    return (
+        <div name="contact" className="flex flex-col justify-center items-center min-h-screen w-full bg-gradient-to-b from-black to-gray-900 px-4 py-10">
+            <div className="pb-6 text-center">
+                <p className="text-3xl md:text-4xl font-bold text-white border-b-4 border-gray-500 inline-block">
+                    {formType === FORM_TYPES.CONTACT ? "Contact Us" : "Feedback"}
+                </p>
+                <p className="text-gray-400 mt-2">
+                    {formType === FORM_TYPES.CONTACT ? "Submit the Form! #Solution Expert" : "I appreciate your Experienced feedback!"}
+                </p>
+            </div>
+            <div className="flex space-x-4 pb-6">
+                {Object.values(FORM_TYPES).map((type) => (
+                    <button
+                        key={type}
+                        type="button"
+                        className={`px-4 py-2 rounded-md transition duration-300 ${formType === type ? "bg-blue-500 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"}`}
+                        onClick={() => setFormType(type)}
+                    >
+                        {type === FORM_TYPES.CONTACT ? "Contact" : "Feedback"}
+                    </button>
+                ))}
+            </div>
+            <div className="w-full max-w-lg bg-gray-800 p-6 rounded-lg shadow-lg">
+                <form onSubmit={handleSubmit} className="flex flex-col">
+                    <input type="text" name="_gotcha" style={{ display: "none" }} value={formData._gotcha} onChange={handleChange} tabIndex={-1} autoComplete="off" />
+                    
+                    {[
+                        { name: "name", placeholder: "Enter your Name", type: "text" },
+                        { name: "email", placeholder: "Enter your Email", type: "email" }
+                    ].map(({ name, placeholder, type }) => (
+                        <div key={name}>
+                            <input
+                                type={type}
+                                name={name}
+                                placeholder={placeholder}
+                                className={`p-3 my-2 bg-gray-900 border-2 rounded-md text-white w-full focus:outline-none ${errors[name] ? "border-red-500" : "border-gray-600"}`}
+                                value={formData[name]}
+                                onChange={handleChange}
+                            />
+                            {errors[name] && <p className="text-red-400 text-sm">{errors[name]}</p>}
+                        </div>
+                    ))}
+                    {formType === FORM_TYPES.CONTACT && (
+                        <textarea name="message" rows={5} placeholder="Enter your Message" className={`p-3 my-2 bg-gray-900 border-2 rounded-md text-white w-full focus:outline-none ${errors.message ? "border-red-500" : "border-gray-600"}`} value={formData.message} onChange={handleChange}></textarea>
+                    )}
+                    {formType === FORM_TYPES.FEEDBACK && (
+                        <>
+                            <select name="rating" className={`p-3 my-2 bg-gray-900 border-2 rounded-md text-white w-full focus:outline-none ${errors.rating ? "border-red-500" : "border-gray-600"}`} value={formData.rating} onChange={handleChange}>
+                                <option value="" disabled>Rate your experience</option>
+                                {[
+                                    { value: "poor", label: "😠 Poor" },
+                                    { value: "average", label: "😐 Average" },
+                                    { value: "good", label: "🙂 Good" },
+                                    { value: "very_good", label: "😊 Very Good" },
+                                    { value: "excellent", label: "🤩 Excellent" }
+                                ].map(({ value, label }) => (
+                                    <option key={value} value={value}>{label}</option>
+                                ))}
+                            </select>
+                            <textarea name="comments" rows={5} placeholder="Enter your Comments" className={`p-3 my-2 bg-gray-900 border-2 rounded-md text-white w-full focus:outline-none ${errors.comments ? "border-red-500" : "border-gray-600"}`} value={formData.comments} onChange={handleChange}></textarea>
+                        </>
+                    )}
+                    <button type="submit" disabled={isSubmitting} className={`my-4 text-white px-6 py-3 mx-auto flex items-center justify-center rounded-md transition duration-300 w-full ${isSubmitting ? "bg-gray-500 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-500"}`}>
+                        {isSubmitting ? "Submitting..." : formType === FORM_TYPES.CONTACT ? "Let's Talk" : "Submit Feedback"}
+                    </button>
+
+                    {/* Success/Error Message */}
+                    {submitStatus && (
+                        <p className={`text-center mt-4 text-lg font-semibold ${submitStatus === "success" ? "text-green-400" : "text-red-400"}`}>
+                            {submitStatus === "success" 
+                                ? "Thank you! Your form has been submitted successfully." 
+                                : "Oops! Something went wrong. Please try again."}
+                        </p>
+                    )}
+                </form>
+            </div>
         </div>
-        <div className='flex justify-center items-center'>
-          <form onSubmit={handleSubmit} action='https://getform.io/f/bwnggxva' method='POST' className='w-full md:w-1/2 flex flex-col'>
-            <input
-              type="text"
-              name="name"
-              placeholder='Enter your Name'
-              className={`p-2 my-2 bg-transparent border-2 rounded-md text-white focus:outline-none ${errors.name && 'border-red-500'}`}
-              value={formData.name}
-              onChange={handleChange}
-            />
-            {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
-            <input
-              type="email"
-              name="email"
-              placeholder='Enter your Email'
-              className={`p-2 my-2 bg-transparent border-2 rounded-md text-white focus:outline-none ${errors.email && 'border-red-500'}`}
-              value={formData.email}
-              onChange={handleChange}
-            />
-            {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
-            <textarea
-              name="message"
-              rows={10}
-              placeholder='Enter your Message'
-              className={`p-2 my-2 bg-transparent border-2 rounded-md text-white focus:outline-none ${errors.message && 'border-red-500'}`}
-              value={formData.message}
-              onChange={handleChange}
-            ></textarea>
-            {errors.message && <p className="text-red-500 text-sm">{errors.message}</p>}
-            <button 
-              type="submit" 
-              className='my-2 text-white bg-gradient-to-b from-cyan-500 to-blue-500 px-6 py-3 mx-auto flex items-center rounded-md hover:scale-110 duration-300'
-            >
-              Let's Talk
-            </button>
-          </form>
-        </div>
-      </div>
-    </div>
-  );
-}
+    );
+};
 
 export default Contact;

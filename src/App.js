@@ -7,19 +7,22 @@ import SocialLinks from './components/SocialLinks';
 import About from './components/About';
 import Myskills from './components/Myskills';
 import Contact from './components/Contact';
+import Experience from './components/Experience';
+import Projects from './components/Projects';
 
 
 function App() {
   return (
-    <div className="">
-      <NavBar/>
-      <Home/>
-      <About/>
-      <Myskills/>
-      <Contact/>
-      <SocialLinks/>
-    
-    </div> 
+    <>
+    <NavBar />
+    <Home />
+    <About />
+    <Experience />
+    <Projects />
+    <Myskills />
+    <Contact />
+    <SocialLinks />
+  </>
   );
 }
 
