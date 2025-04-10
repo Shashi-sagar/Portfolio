@@ -32,7 +32,7 @@ const projects = [
     previewDescription: " ##Vyom## Coming Soon.. ##Vyom## ",
     tech: ["React", "Redux", "Axios", "Tailwind.css"],
     status: "upcoming",
-    duration: "02/25 - 04/25",
+    duration: "02/25 - ##/25",
     link: "#",
     github: "https://github.com/Shashi-sagar/bam_jone",
     docs: null,
